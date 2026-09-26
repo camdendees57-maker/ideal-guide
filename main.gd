@@ -27,12 +27,10 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if not initialized:
 		return
-
 	var left_pos := left_hand.global_position
 	var right_pos := right_hand.global_position
 	var left_velocity := ((left_pos - last_left) / max(delta, 0.0001)).limit_length(MAX_HAND_SPEED)
 	var right_velocity := ((right_pos - last_right) / max(delta, 0.0001)).limit_length(MAX_HAND_SPEED)
-
 	var left_pressed := _grip_pressed(left_controller)
 	var right_pressed := _grip_pressed(right_controller)
 
@@ -63,18 +61,16 @@ func _physics_process(delta: float) -> void:
 
 	if body.is_on_floor():
 		velocity.y = max(velocity.y, 0.0)
-
 	body.velocity = velocity
 	body.move_and_slide()
 	velocity = body.velocity
-
 	last_left = left_pos
 	last_right = right_pos
 
 func _grip_pressed(controller: XRController3D) -> bool:
 	if controller == null:
 		return false
-	return controller.get_input("grip") or controller.get_input("trigger_click")
+	return controller.is_button_pressed("grip") or controller.is_button_pressed("trigger_click")
 
 func _hand_can_grab(hand: Area3D) -> bool:
 	return hand.has_overlapping_bodies() or hand.has_overlapping_areas()
@@ -110,13 +106,11 @@ func _setup_environment() -> void:
 func _make_static_box(pos: Vector3, size: Vector3, color: Color) -> StaticBody3D:
 	var static_body := StaticBody3D.new()
 	static_body.position = pos
-
 	var collision := CollisionShape3D.new()
 	var box := BoxShape3D.new()
 	box.size = size
 	collision.shape = box
 	static_body.add_child(collision)
-
 	var mesh := MeshInstance3D.new()
 	var primitive := BoxMesh.new()
 	primitive.size = size
@@ -125,7 +119,6 @@ func _make_static_box(pos: Vector3, size: Vector3, color: Color) -> StaticBody3D
 	material.albedo_color = color
 	mesh.material_override = material
 	static_body.add_child(mesh)
-
 	add_child(static_body)
 	return static_body
 
@@ -157,7 +150,6 @@ func _setup_player() -> void:
 	body.name = "PlayerBody"
 	body.position = Vector3(0, PLAYER_HEIGHT, 4.0)
 	add_child(body)
-
 	var collision := CollisionShape3D.new()
 	var capsule := CapsuleShape3D.new()
 	capsule.height = 1.25
@@ -179,13 +171,11 @@ func _make_hand(hand_name: String, controller: XRController3D) -> Area3D:
 	hand.collision_mask = 1
 	hand.monitoring = true
 	controller.add_child(hand)
-
 	var collision := CollisionShape3D.new()
 	var sphere := SphereShape3D.new()
 	sphere.radius = HAND_RADIUS
 	collision.shape = sphere
 	hand.add_child(collision)
-
 	var mesh := MeshInstance3D.new()
 	var sphere_mesh := SphereMesh.new()
 	sphere_mesh.radius = HAND_RADIUS
@@ -195,5 +185,4 @@ func _make_hand(hand_name: String, controller: XRController3D) -> Area3D:
 	material.albedo_color = Color(0.95, 0.55, 0.15)
 	mesh.material_override = material
 	hand.add_child(mesh)
-
 	return hand
