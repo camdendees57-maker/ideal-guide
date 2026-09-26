@@ -29,8 +29,8 @@ func _physics_process(delta: float) -> void:
 		return
 	var left_pos := left_hand.global_position
 	var right_pos := right_hand.global_position
-	var left_velocity := ((left_pos - last_left) / max(delta, 0.0001)).limit_length(MAX_HAND_SPEED)
-	var right_velocity := ((right_pos - last_right) / max(delta, 0.0001)).limit_length(MAX_HAND_SPEED)
+	var left_velocity: Vector3 = ((left_pos - last_left) / max(delta, 0.0001)).limit_length(MAX_HAND_SPEED)
+	var right_velocity: Vector3 = ((right_pos - last_right) / max(delta, 0.0001)).limit_length(MAX_HAND_SPEED)
 	var left_pressed := _grip_pressed(left_controller)
 	var right_pressed := _grip_pressed(right_controller)
 
