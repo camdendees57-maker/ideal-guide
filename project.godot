@@ -1,0 +1,24 @@
+[application]
+config/name="Gorilla Locomotion Lab"
+run/main_scene="res://Main.tscn"
+
+[display]
+window/size/viewport_width=1280
+window/size/viewport_height=720
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+
+[xr]
+openxr/enabled=true
+
+[input]
+left_grip={
+"deadzone": 0.5,
+"events": [Object(InputEventJoypadButton,"button_index":2)]
+}
+right_grip={
+"deadzone": 0.5,
+"events": [Object(InputEventJoypadButton,"button_index":2)]
+}
