@@ -60,7 +60,10 @@ jobs:
           printf "4.5.1.stable\n" > ~/.local/share/godot/export_templates/4.5.1.stable/version.txt
 
       - name: Install project Android build template
-        run: ./godot --headless --path . --editor --install-android-build-template
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 120 ./godot --headless --path . --editor --install-android-build-template
 
       - name: Validate project
         run: ./godot --headless --path . --editor --quit
