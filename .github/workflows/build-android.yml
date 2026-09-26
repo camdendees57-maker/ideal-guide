@@ -1,0 +1,53 @@
+name: Build VR Android APK
+
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Godot
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L --fail --retry 3 -o godot.zip "https://downloads.godotengine.org/?path=/4.5.1/Godot_v4.5.1-stable_linux.x86_64.zip"
+          unzip -q godot.zip
+          mv Godot_v4.5.1-stable_linux.x86_64 godot
+          chmod +x godot
+          ./godot --version
+
+      - name: Install Godot export templates
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.local/share/godot/export_templates/4.5.1.stable
+          curl -L --fail --retry 3 -o templates.tpz "https://downloads.godotengine.org/?path=/4.5.1/Godot_v4.5.1-stable_export_templates.tpz"
+          unzip -q templates.tpz -d templates
+          cp -r templates/templates/* ~/.local/share/godot/export_templates/4.5.1.stable/
+
+      - name: Validate project
+        run: ./godot --headless --path . --editor --quit
+
+      - name: Export Android APK
+        run: |
+          mkdir -p build/android
+          ./godot --headless --path . --export-debug "Android" build/android/GorillaLocomotionLab.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: GorillaLocomotionLab-Android
+          path: build/android/GorillaLocomotionLab.apk
+          if-no-files-found: error
+          retention-days: 14
